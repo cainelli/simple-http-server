@@ -1,0 +1,89 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: default
+spec:
+  profile: minimal
+  meshConfig: # https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/#MeshConfig
+    enableTracing: true
+    enableAutoMtls: true
+    accessLogEncoding: JSON
+    defaultConfig:
+      proxyMetadata:
+        ISTIO_META_REQUESTED_NETWORK_VIEW: sandbox3
+      tracing:
+        datadog:
+          address: "$(HOST_IP):8126"
+  components:
+    cni:
+      enabled: true
+      namespace: istio-system
+
+    ingressGateways:
+      - name: internal-ingressgateway
+        enabled: false
+        namespace: istio-system
+        label:
+          app: internal-ingressgateway
+          istio: ingressgateway
+          topology.istio.io/network: sandbox11
+        k8s:
+          env:
+            # sni-dnat adds the clusters required for AUTO_PASSTHROUGH mode
+            - name: ISTIO_META_ROUTER_MODE
+              value: "sni-dnat"
+            # traffic through this gateway should be routed inside the network
+            - name: ISTIO_META_REQUESTED_NETWORK_VIEW
+              value: sandbox11
+          overlays:
+            # Patch Deployment: we need hostPort to receive a direct connection from NLB and skip kube-proxy hop.
+            - kind: Deployment
+              name: internal-ingressgateway
+              patches:
+              - path: "spec.template.spec.containers.[name:istio-proxy].ports[containerPort:8080]"
+                value: { containerPort: 8080, hostPort: 8001, protocol: TCP }
+            # Patch Service: by default the service type is LoadBalancer which creates a ELB in AWS.
+            - kind: Service
+              name: internal-ingressgateway
+              patches:
+              - path: "spec.type"
+                value: ClusterIP
+
+          # TODO: disable Service type LoadBalancer as it automatically creates an ALB.
+  values:
+    cni:
+      excludeNamespaces:
+       - istio-system
+       - kube-system
+      logLevel: info
+    global: # https://github.com/istio/istio/blob/1.7.4/manifests/charts/global.yaml
+      meshID: sandbox
+      network: sandbox11
+      multiCluster:
+        clusterName: sandbox11
+      logging:
+        level: "default:info"
+      proxy:
+        holdApplicationUntilProxyStarts: true
+        includeIPRanges: 172.20.0.0/16
+        autoInject: enabled
+        tracer: datadog
+        lifecycle:
+          postStart:
+            exec:
+              command:
+                - /usr/local/bin/pilot-agent
+                - wait
+          preStop:
+            exec:
+              command:
+              - "/usr/bin/perl"
+              - "-e"
+              - |
+                use IO::Socket::INET;
+                $SIG{ALRM} = sub { print "timeout\n" };
+                alarm($ENV{'ISTIO_METAJSON_ANNOTATIONS'} =~ /"gyg.io\/istio-proxy-pre-stop-sleep":\s*"(\d+)"/ ? $1 : 20);
+                print "waiting for connection\n";
+                IO::Socket::INET->new(LocalPort => 15050, ReuseAddr => 1, ReusePort => 1, Listen => 1)->accept() or die "Couln't open socket: $!";
+                print "shutting down\n";
