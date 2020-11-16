@@ -10,8 +10,6 @@ spec:
     enableAutoMtls: true
     accessLogEncoding: JSON
     defaultConfig:
-      proxyMetadata:
-        ISTIO_META_REQUESTED_NETWORK_VIEW: sandbox3
       tracing:
         datadog:
           address: "$(HOST_IP):8126"
@@ -22,12 +20,12 @@ spec:
 
     ingressGateways:
       - name: internal-ingressgateway
-        enabled: false
+        enabled: true
         namespace: istio-system
         label:
           app: internal-ingressgateway
           istio: ingressgateway
-          topology.istio.io/network: sandbox11
+          topology.istio.io/network: sandbox11 # override in values
         k8s:
           env:
             # sni-dnat adds the clusters required for AUTO_PASSTHROUGH mode
@@ -35,7 +33,7 @@ spec:
               value: "sni-dnat"
             # traffic through this gateway should be routed inside the network
             - name: ISTIO_META_REQUESTED_NETWORK_VIEW
-              value: sandbox11
+              value: sandbox11 # override in values
           overlays:
             # Patch Deployment: we need hostPort to receive a direct connection from NLB and skip kube-proxy hop.
             - kind: Deployment
@@ -58,10 +56,18 @@ spec:
        - kube-system
       logLevel: info
     global: # https://github.com/istio/istio/blob/1.7.4/manifests/charts/global.yaml
-      meshID: sandbox
-      network: sandbox11
+      meshID: sandbox # override it with environment name
+      network: sandbox11 # override it with cluster name values
       multiCluster:
-        clusterName: sandbox11
+        clusterName: sandbox11 # override it with custer name in values
+      meshNetworks:
+        sandbox3:
+          endpoints:
+          - fromCidr: "10.22.0.0/16"
+          gateways:
+          - address: 10.22.26.90
+            port: 8001
+
       logging:
         level: "default:info"
       proxy:
