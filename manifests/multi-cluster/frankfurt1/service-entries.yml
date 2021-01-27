@@ -15,7 +15,15 @@ spec:
     protocol: HTTP
   resolution: STATIC
   endpoints:
-    - address: 10.20.7.196 # frankfurt3
+    - address: 10.65.2.116 # frankfurt3
+      network: frankfurt3
+      ports:
+        http: 8001
+    - address: 10.65.9.23 # frankfurt3
+      network: frankfurt3
+      ports:
+        http: 8001
+    - address: 10.65.6.179 # frankfurt3
       network: frankfurt3
       ports:
         http: 8001
@@ -36,7 +44,15 @@ spec:
     protocol: HTTP
   resolution: STATIC
   endpoints:
-    - address: 10.20.7.196 # frankfurt3
+    - address: 10.65.2.116 # frankfurt3
+      network: frankfurt3
+      ports:
+        http: 8001
+    - address: 10.65.9.23 # frankfurt3
+      network: frankfurt3
+      ports:
+        http: 8001
+    - address: 10.65.6.179 # frankfurt3
       network: frankfurt3
       ports:
         http: 8001
