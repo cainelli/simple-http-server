@@ -1,0 +1,40 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: service-a
+  namespace : service-a
+spec:
+  hosts:
+  - service-a.service-a.svc.cluster.local
+  location: MESH_INTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: STATIC
+  endpoints:
+    - address: 10.20.7.196 # frankfurt1
+      network: frankfurt1
+      ports:
+        http: 8001
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: service-b
+  namespace : service-b
+spec:
+  hosts:
+  - service-b.service-b.svc.cluster.local
+  location: MESH_INTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: STATIC
+  endpoints:
+    - address: 10.20.7.196 # frankfurt1
+      network: frankfurt1
+      ports:
+        http: 8001

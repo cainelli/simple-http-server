@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b
+  labels:
+    app: service-b
+  namespace: service-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: service-b
+    spec:
+      containers:
+      - image: cainelli/simple-http-server:1.0.0-dev
+        imagePullPolicy: Always
+        name: service-b
+        env:
+          - name: CLUSTER
+            value: "frankfurt3"
+        resources:
+          requests:
+            cpu: "64m"
+            memory: "32M"
+          limits:
+            cpu: "64m"
+            memory: "32M"
+        ports:
+        - containerPort: 8000
+          name: http
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: service-b
+  namespace: service-b
+spec:
+  selector:
+    app: service-b
+  type: ClusterIP
+  ports:
+  - name:  http
+    port:  80
+    targetPort:  8000
