@@ -23,7 +23,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: site
+  name: service-a
   namespace: service-a
 spec:
   gateways:
@@ -40,7 +40,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: site
+  name: service-b
   namespace: service-b
 spec:
   gateways:
