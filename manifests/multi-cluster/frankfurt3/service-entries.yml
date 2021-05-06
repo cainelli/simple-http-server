@@ -14,16 +14,16 @@ spec:
     protocol: HTTP
   resolution: STATIC
   endpoints:
-    - address: 1.1.1.1 # cluster1
-      network: cluster2
+    - address: 10.10.0.1
+      network: cluster1
       ports:
-        http: 81
-    - address: 1.1.1.2 # cluster1
-      network: cluster2
+        http: 8001
+    - address: 10.10.0.2
+      network: cluster1
       ports:
-        http: 81
-    - address: 1.1.1.3 # cluster1
-      network: cluster2
+        http: 8001
+    - address: 10.10.0.3
+      network: cluster1
       ports:
         http: 8001
 ---
@@ -42,15 +42,15 @@ spec:
     protocol: HTTP
   resolution: STATIC
   endpoints:
-    - address: 10.1.1.1 # cluster1
-      network: cluster2
+    - address: 10.10.0.1
+      network: cluster1
       ports:
-        http: 81
-    - address: 10.1.1.2 # cluster1
-      network: cluster2
+        http: 8001
+    - address: 10.10.0.2
+      network: cluster1
       ports:
-        http: 81
-    - address: 10.1.1.3 # cluster1
-      network: cluster2
+        http: 8001
+    - address: 10.10.0.3
+      network: cluster1
       ports:
-        http: 81
+        http: 8001
