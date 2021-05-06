@@ -17,8 +17,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        gyg.io/istio-proxy-pre-stop-sleep: "60"
       labels:
         app: service-a
     spec:
@@ -28,7 +26,7 @@ spec:
         name: service-a
         env:
           - name: CLUSTER
-            value: "frankfurt1"
+            value: "cluster1"
         resources:
           requests:
             cpu: "64m"

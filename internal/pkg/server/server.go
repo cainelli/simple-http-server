@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/getyourguide/simple-http-server/internal/pkg/config"
+	"github.com/cainelli/simple-http-server/internal/pkg/config"
 	"github.com/gorilla/mux"
 )
 

@@ -1,4 +1,4 @@
-module github.com/getyourguide/simple-http-server
+module github.com/cainelli/simple-http-server
 
 require (
 	github.com/gorilla/mux v1.7.4

@@ -17,8 +17,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        gyg.io/istio-proxy-pre-stop-sleep: "60"
       labels:
         app: service-a
     spec:

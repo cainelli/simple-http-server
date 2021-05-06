@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/getyourguide/simple-http-server/internal/pkg/config"
-	"github.com/getyourguide/simple-http-server/internal/pkg/server"
+	"github.com/cainelli/simple-http-server/internal/pkg/config"
+	"github.com/cainelli/simple-http-server/internal/pkg/server"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 

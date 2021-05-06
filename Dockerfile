@@ -1,7 +1,7 @@
 FROM golang:1.15.2-alpine3.12 as builder
 
-WORKDIR /go/src/github.com/getyourguide/simple-http-server/
-COPY . /go/src/github.com/getyourguide/simple-http-server/
+WORKDIR /go/src/github.com/cainelli/simple-http-server/
+COPY . /go/src/github.com/cainelli/simple-http-server/
 RUN apk add --no-cache  \
       pkgconfig         \
       bash              \
@@ -30,7 +30,7 @@ RUN chown nobody:nobody .
 
 USER nobody:nobody
 
-COPY --from=builder /go/src/github.com/getyourguide/simple-http-server/simple-http-server .
+COPY --from=builder /go/src/github.com/cainelli/simple-http-server/simple-http-server .
 
 EXPOSE 8000
 
